@@ -24,7 +24,9 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return loading ? Loading() : Scaffold(
+    return loading
+        ? Loading()
+        : Scaffold(
       backgroundColor: Colors.brown[100],
       appBar: AppBar(
         backgroundColor: Colors.brown[400],
@@ -48,7 +50,8 @@ class _RegisterState extends State<Register> {
             children: <Widget>[
               SizedBox(height: 20.0),
               TextFormField(
-                decoration: textInputDecoration.copyWith(hintText: 'Email'),
+                decoration:
+                textInputDecoration.copyWith(hintText: 'Email'),
                 validator: (val) => val.isEmpty ? 'Enter an email' : null,
                 onChanged: (val) {
                   setState(() => email = val);
@@ -56,9 +59,12 @@ class _RegisterState extends State<Register> {
               ),
               SizedBox(height: 20.0),
               TextFormField(
-                decoration: textInputDecoration.copyWith(hintText: 'Password'),
+                decoration:
+                textInputDecoration.copyWith(hintText: 'Password'),
                 validator: (val) =>
-                    val.length < 6 ? 'Enter a password 6+ chars long ' : null,
+                val.length < 6
+                    ? 'Enter a password 6+ chars long '
+                    : null,
                 obscureText: true,
                 onChanged: (val) {
                   setState(() => password = val);
@@ -71,10 +77,10 @@ class _RegisterState extends State<Register> {
                     setState(() {
                       loading = true;
                     });
-                    dynamic result = await _auth.registerWithEmailAndPassword(
-                        email, password);
+                    dynamic result = await _auth
+                        .registerWithEmailAndPassword(email, password);
                     if (result == null) {
-                      setState((){
+                      setState(() {
                         error = 'please enter a valid email';
                         loading = false;
                       });

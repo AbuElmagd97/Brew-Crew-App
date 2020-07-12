@@ -1,4 +1,5 @@
 import 'package:brewcrew/models/user.dart';
+import 'package:brewcrew/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
@@ -11,41 +12,46 @@ class AuthService {
 
   //auth change user stream
   Stream<User> get user {
-    return _auth.onAuthStateChanged
-        .map(_userFromFirebaseUser);
+    return _auth.onAuthStateChanged.map(_userFromFirebaseUser);
   }
 
   //signIn anon
   Future signInAnon() async {
-    try{
+    try {
       AuthResult result = await _auth.signInAnonymously();
       FirebaseUser user = result.user;
       return _userFromFirebaseUser(user);
-    } catch(e) {
+    } catch (e) {
       print(e.toString());
       return null;
     }
   }
 
   //signIn with email & password
-  Future signInWithEmailAndPassword(String email,String password) async {
+  Future signInWithEmailAndPassword(String email, String password) async {
     try {
-      AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      AuthResult result = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
       FirebaseUser user = result.user;
       return _userFromFirebaseUser(user);
-    } catch(e){
+    } catch (e) {
       print(e.toString());
       return null;
     }
   }
 
   //register with email & password
-  Future registerWithEmailAndPassword(String email,String password) async {
+  Future registerWithEmailAndPassword(String email, String password) async {
     try {
-      AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      AuthResult result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
       FirebaseUser user = result.user;
+
+      // create a new document for the user with uid
+      await DatabaseService(uid: user.uid).updateUserData(
+          '0', 'new crew member', 100);
       return _userFromFirebaseUser(user);
-    } catch(e){
+    } catch (e) {
       print(e.toString());
       return null;
     }
@@ -53,13 +59,11 @@ class AuthService {
 
   // signOut
   Future signOut() async {
-    try{
+    try {
       return await _auth.signOut();
-    } catch(e){
+    } catch (e) {
       print(e.toString());
       return null;
     }
   }
-
-
 }
